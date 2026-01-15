@@ -1,4 +1,5 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateMemoDto } from './create-memo.dto';
-
-export class UpdateMemoDto extends PartialType(CreateMemoDto) {}
+export class UpdateMemoDto {
+  title?: string;
+  content?: string;
+  metadata?: Record<string, any>;
+}
