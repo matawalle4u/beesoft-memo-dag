@@ -6,7 +6,7 @@ import { MemoNode, MemoActionType, MemoStatus } from './entities/memo-node.entit
 import { CreateMemoDto } from './dto/create-memo.dto';
 import { UpdateMemoDto } from './dto/update-memo.dto';
 import { AssignMemoDto } from './dto/assign-memo.dto';
-import {MemoView, TimelineView, MemoComparison, MemoDifferences} from './models/memo-view.model';
+import { MemoView, TimelineView, MemoComparison, MemoDifferences } from './models/memo-view.model';
 
 @Injectable()
 export class MemoService {
@@ -69,6 +69,10 @@ export class MemoService {
       where: { id: memo.currentNodeId },
     });
 
+    if (!currentNode) {
+      throw new NotFoundException('Current node not found');
+    }
+
     // Create new node
     const newNode = this.nodeRepository.create({
       memoId,
@@ -108,6 +112,10 @@ export class MemoService {
       where: { id: memo.currentNodeId },
     });
 
+    if (!currentNode) {
+      throw new NotFoundException('Current node not found');
+    }
+
     const newNode = this.nodeRepository.create({
       memoId,
       version: currentNode.version + 1,
@@ -146,6 +154,10 @@ export class MemoService {
     const currentNode = await this.nodeRepository.findOne({
       where: { id: memo.currentNodeId },
     });
+
+    if (!currentNode) {
+      throw new NotFoundException('Current node not found');
+    }
 
     const newNode = this.nodeRepository.create({
       memoId,
@@ -203,6 +215,10 @@ export class MemoService {
     const currentNode = await this.nodeRepository.findOne({
       where: { id: memo.currentNodeId },
     });
+
+    if (!currentNode) {
+      throw new NotFoundException('Current node not found');
+    }
 
     return currentNode;
   }
@@ -311,6 +327,10 @@ export class MemoService {
       where: { id: memo.rootNodeId },
     });
 
+    if (!rootNode) {
+      throw new NotFoundException('Root node not found');
+    }
+
     return await this.buildMemoView(memoId, rootNode);
   }
 
@@ -350,12 +370,6 @@ export class MemoService {
     if (!currentNode) {
       throw new NotFoundException('Current node not found');
     }
-
-    // Find next node (child in DAG)
-    const nextNode = await this.nodeRepository.findOne({
-      where: { memoId },
-      order: { version: 'ASC' },
-    });
 
     // Custom query to find children
     const children = await this.nodeRepository
@@ -426,10 +440,14 @@ export class MemoService {
       where: { id: memo.currentNodeId },
     });
 
+    if (!currentNode) {
+      throw new NotFoundException('Current node not found');
+    }
+
     return {
       memoId: memo.id,
       totalVersions: nodes.length,
-      currentVersion: currentNode?.version,
+      currentVersion: currentNode.version,
       timeline: nodes.map(node => ({
         nodeId: node.id,
         version: node.version,
@@ -451,6 +469,10 @@ export class MemoService {
     const memo = await this.memoRepository.findOne({
       where: { id: memoId },
     });
+
+    if (!memo) {
+      throw new NotFoundException('Memo not found');
+    }
 
     const totalVersions = await this.nodeRepository.count({
       where: { memoId },
@@ -511,7 +533,7 @@ export class MemoService {
         content: nodeA.content !== nodeB.content ? { from: nodeA.content, to: nodeB.content } : null,
         status: nodeA.status !== nodeB.status ? { from: nodeA.status, to: nodeB.status } : null,
         assignedTo: nodeA.assignedToId !== nodeB.assignedToId
-          ? { from: nodeA.assignedToId, to: nodeB.assignedToId }
+          ? { from: nodeA.assignedToId ?? '', to: nodeB.assignedToId ?? '' }
           : null,
       },
     };
