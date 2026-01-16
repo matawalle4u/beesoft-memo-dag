@@ -1,12 +1,12 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Memo } from '../entities/memo.entity';
-import { MemoNode, MemoActionType, MemoStatus } from '../entities/memo-node.entity';
-import { CreateMemoDto } from '../dto/create-memo.dto';
-import { UpdateMemoDto } from '../dto/update-memo.dto';
-import { AssignMemoDto } from '../dto/assign-memo.dto';
-import { MemoView, TimelineView, MemoComparison, MemoDifferences } from '../models/memo-view.model';
+import { Memo } from './entities/memo.entity';
+import { MemoNode, MemoActionType, MemoStatus } from './entities/memo-node.entity';
+import { CreateMemoDto } from './dto/create-memo.dto';
+import { UpdateMemoDto } from './dto/update-memo.dto';
+import { AssignMemoDto } from './dto/assign-memo.dto';
+import {MemoView, TimelineView, MemoComparison, MemoDifferences} from './models/memo-view.model';
 
 @Injectable()
 export class MemoService {
@@ -17,10 +17,6 @@ export class MemoService {
     @InjectRepository(Memo)
     private readonly memoRepository: Repository<Memo>,
   ) {}
-
-  // ============================================
-  // CORE OPERATIONS
-  // ============================================
 
   async createMemo(createMemoDto: CreateMemoDto): Promise<Memo> {
     // Create root node

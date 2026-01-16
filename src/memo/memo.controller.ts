@@ -3,6 +3,7 @@ import { MemoService } from './memo.service';
 import { CreateMemoDto } from './dto/create-memo.dto';
 import { UpdateMemoDto } from './dto/update-memo.dto';
 import { AssignMemoDto } from './dto/assign-memo.dto';
+import { MemoActionType, MemoStatus } from './entities/memo-node.entity';
 
 // import { MemoStatus } from './entities/memo-status.enum';
 // import { MemoActionType } from './entities/memo-action-type.enum';
